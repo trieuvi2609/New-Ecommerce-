@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Product from "../models/product";
+import { IProduct } from "../models/product";
 import { AuthRequest, CustomError, ResponseData } from "../types/type";
 import { CreateProduct, ListProductsResponse } from "../dto/admin.dto";
 
@@ -15,11 +16,18 @@ export const getProductsAdmin = async (
       throw error;
     }
     const products = await Product.find({ user: req.userId });
+    const transformedProducts = products.map((product: IProduct) => {
+      const productObject = product.toObject(); // Convert Mongoose document to plain JavaScript object
+      return {
+        ...productObject,
+        productId: product._id
+      };
+    });
+
     const response: ListProductsResponse = {
-      data: [...products],
+      data: transformedProducts,
       statusCode: 200,
     };
-    console.log("products", products);
     res.status(200).json(response);
   } catch (err) {
     const error = new Error("Fetched products failed") as any;
@@ -34,8 +42,15 @@ export const addProducts = async (
   next: NextFunction
 ) => {
   try {
-    const { productName, price, description, rating, quantityInStock } =
-      req.body;
+    const {
+      productName,
+      price,
+      description,
+      rating,
+      quantityInStock,
+      category,
+      oldPrice,
+    } = req.body;
     if (!req.isAuth) {
       const error: CustomError = new Error("Unauthorized");
       error.statusCode = 401;
@@ -46,7 +61,7 @@ export const addProducts = async (
       error.statusCode = 422;
       throw error;
     }
-    console.log('req.file', req.file.path)
+    console.log("req.file", req.file.path);
     const imageUrl = req.file.filename;
     const newProduct = new Product({
       productName,
@@ -56,6 +71,8 @@ export const addProducts = async (
       rating,
       quantityInStock,
       user: req.userId,
+      category,
+      oldPrice,
     });
     const result = await newProduct.save();
     console.log("result", result);
