@@ -13,7 +13,7 @@ export const signup = async (
 ) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error("Validation failed.") as any;
+    const error: CustomError = new Error("Validation failed.");
     error.statusCode = 422;
     error.data = errors.array();
     return next(error);
@@ -33,7 +33,7 @@ export const signup = async (
     if (!customError.statusCode) {
       customError.statusCode = 500;
     }
-    next(err);
+    next(customError);
   }
 };
 
@@ -47,16 +47,16 @@ export const login = async (
   try {
     const user = (await User.findOne({ email })) as IUser | null;
     if (!user) {
-      const error = new Error(
+      const error: CustomError = new Error(
         "A user with this email could not be found!"
-      ) as any;
+      );
       error.statusCode = 401;
       throw error;
     }
 
     const isEqual = await bcrypt.compare(password, user.password);
     if (!isEqual) {
-      const error = new Error("Wrong password!") as any;
+      const error: CustomError = new Error("Wrong password!");
       error.statusCode = 401;
       throw error;
     }
@@ -92,6 +92,6 @@ export const login = async (
     if (!customError.statusCode) {
       customError.statusCode = 500;
     }
-    next(err);
+    next(customError);
   }
 };

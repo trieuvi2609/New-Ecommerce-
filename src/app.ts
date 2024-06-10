@@ -9,23 +9,28 @@ import path from "path";
 import { isAuth } from "./middleware/auth";
 import { AuthRequest } from "./types/type";
 import { clearImage } from "./utils/common";
+import errorHandler from "./middleware/errorHandler";
 const app = express();
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    console.log('path', path.resolve('images'))
-    cb(null, path.join(__dirname, 'images'));
+    console.log("path", path.resolve("images"));
+    cb(null, path.join(__dirname, "images"));
   },
   filename: (req, file, cb) => {
     cb(null, new Date().toISOString() + "-" + file.originalname);
   },
 });
 
-const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback): void => {
+const fileFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback
+): void => {
   if (
-    file.mimetype === 'image/png' ||
-    file.mimetype === 'image/jpg' ||
-    file.mimetype === 'image/jpeg'
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
   ) {
     cb(null, true);
   } else {
@@ -49,7 +54,7 @@ app.options(
 
 app.use(cors({ origin: "http://localhost:3000", optionsSuccessStatus: 200 }));
 
-app.use(isAuth)
+app.use(isAuth);
 
 app.get("/", (req, res, next) => {
   res.send("Hello");
@@ -57,6 +62,8 @@ app.get("/", (req, res, next) => {
 app.use(bodyParser.json());
 app.use(authRoutes);
 app.use(isAuth, adminRoutes);
+
+app.use(errorHandler);
 
 mongoose
   .connect(

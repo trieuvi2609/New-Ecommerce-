@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface IUser extends Document {
   _id: string;
@@ -7,6 +7,8 @@ export interface IUser extends Document {
   userName: string;
   status: string;
   cart: Types.ObjectId[];
+  role: string;
+  shop: Types.ObjectId
 }
 
 const userSchema = new Schema<IUser>({
@@ -26,10 +28,20 @@ const userSchema = new Schema<IUser>({
     type: String,
     default: "Hello!",
   },
-  cart: [{
+  cart: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Cart",
+    },
+  ],
+  role: {
+    type: String,
+    required: true,
+  },
+  shop: {
     type: Schema.Types.ObjectId,
-    ref: 'Cart',
-  }],
+    ref: "Shop",
+  },
 });
 
-export default mongoose.model<IUser>('User', userSchema);
+export default mongoose.model<IUser>("User", userSchema);

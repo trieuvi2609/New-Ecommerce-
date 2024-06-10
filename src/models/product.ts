@@ -8,6 +8,7 @@ export interface IProduct extends Document {
   imageUrl: string;
   rating: number;
   user: IUser;
+  category: string;
 }
 
 const productSchema = new Schema<IProduct>({
@@ -35,6 +36,10 @@ const productSchema = new Schema<IProduct>({
   user: {
     type: Schema.Types.ObjectId,
     ref: "User",
+  },
+  category: {
+    type: String,
+    required: true,
   },
 });
 
