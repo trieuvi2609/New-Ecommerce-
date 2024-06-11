@@ -3,12 +3,11 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import authRoutes from "./routes/auth";
 import adminRoutes from "./routes/admin";
+import userRoutes from './routes/user'
 import mongoose from "mongoose";
 import multer, { FileFilterCallback } from "multer";
 import path from "path";
 import { isAuth } from "./middleware/auth";
-import { AuthRequest } from "./types/type";
-import { clearImage } from "./utils/common";
 import errorHandler from "./middleware/errorHandler";
 const app = express();
 
@@ -62,6 +61,7 @@ app.get("/", (req, res, next) => {
 app.use(bodyParser.json());
 app.use(authRoutes);
 app.use(isAuth, adminRoutes);
+app.use(isAuth, userRoutes)
 
 app.use(errorHandler);
 

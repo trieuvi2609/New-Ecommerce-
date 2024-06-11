@@ -6,9 +6,9 @@ import { addProducts, getProductsAdmin } from "../controllers/admin";
 const router = express.Router();
 
 router.get(
-  "/products",
+  "/admin/products",
   getProductsAdmin
 );
-router.post("/create-product", addProducts)
+router.post("/admin/create-product", addProducts)
 
 export default router;
