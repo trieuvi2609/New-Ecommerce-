@@ -61,7 +61,7 @@ app.get("/", (req, res, next) => {
 app.use(bodyParser.json());
 app.use(authRoutes);
 app.use(isAuth, adminRoutes);
-app.use(isAuth, userRoutes)
+app.use(userRoutes)
 
 app.use(errorHandler);
 

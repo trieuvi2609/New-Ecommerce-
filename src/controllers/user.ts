@@ -10,11 +10,11 @@ export const getProducts = async (
   next: NextFunction
 ) => {
   try {
-    if (!req.isAuth) {
-      const error: CustomError = new Error("Unauthorized");
-      error.statusCode = 401;
-      throw error;
-    }
+    // if (!req.isAuth) {
+    //   const error: CustomError = new Error("Unauthorized");
+    //   error.statusCode = 401;
+    //   throw error;
+    // }
     const products = await Product.find();
     const transformedProducts = products.map((product: IProduct) => {
       const productObject = product.toObject(); // Convert Mongoose document to plain JavaScript object

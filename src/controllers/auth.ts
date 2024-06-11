@@ -19,11 +19,11 @@ export const signup = async (
     return next(error);
   }
 
-  const { email, userName, password } = req.body;
+  const { email, userName, password, role } = req.body;
 
   try {
     const hashedPw = await bcrypt.hash(password, 12);
-    const user = new User({ email, password: hashedPw, userName });
+    const user = new User({ email, password: hashedPw, userName, role });
     const result = await user.save();
     res
       .status(201)
